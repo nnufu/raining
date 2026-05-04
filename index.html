@@ -1,0 +1,1878 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Hẹn gặp lại sau mưa hạ</title>
+  <style>
+    :root{
+      --sky-top:#80d8ff;
+      --sky-bottom:#ffffff;
+      --text:#23526b;
+      --blue:#4fc3f7;
+      --deep:#14709a;
+      --glass:rgba(255,255,255,.62);
+      --line:rgba(255,255,255,.78);
+      --shadow:0 24px 70px rgba(55,139,190,.22);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"Quicksand","Segoe UI",Arial,sans-serif;color:var(--text)}
+    button,input,textarea,select{font:inherit;font-family:"Quicksand","Segoe UI",Arial,sans-serif}
+    button{
+      border:0;border-radius:999px;padding:11px 18px;font-weight:800;cursor:pointer;
+      color:#155d7d;background:rgba(255,255,255,.78);box-shadow:0 10px 26px rgba(53,139,190,.18);
+      transition:.2s transform,.2s background,.2s box-shadow;
+    }
+    button:hover{transform:translateY(-2px);background:white;box-shadow:0 14px 34px rgba(53,139,190,.25)}
+    button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    input,textarea,select{
+      width:100%;border:1px solid rgba(84,169,210,.34);border-radius:16px;padding:10px 12px;
+      color:var(--text);background:rgba(255,255,255,.78);outline:none;
+    }
+    textarea{min-height:76px;resize:vertical}
+    label{display:grid;gap:6px;font-size:13px;font-weight:800}
+    .primary{background:linear-gradient(135deg,#55caff,#b6efff);color:#0c597b}
+    .danger{background:linear-gradient(135deg,#ffe2e2,#ffc9c9);color:#9a3434}
+    .small{padding:8px 13px;font-size:13px}
+    .glass{
+      background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(18px);
+      border-radius:28px;box-shadow:var(--shadow);
+    }
+    .hidden{display:none!important}
+    .screen{
+      position:absolute;inset:0;overflow:hidden;
+      background:
+        radial-gradient(circle at 18% 20%,rgba(255,255,255,.85),transparent 22%),
+        radial-gradient(circle at 80% 12%,rgba(255,255,255,.72),transparent 21%),
+        linear-gradient(180deg,var(--sky-top),#dff6ff 52%,var(--sky-bottom));
+    }
+    #startScreen{display:grid;place-items:center;padding:22px}
+    .start-card{width:min(800px,94vw);text-align:center;padding:clamp(28px,5vw,58px);z-index:2}
+    .tiny{margin:0 0 8px;text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:700;color:#8b9ed6}
+    h1{
+      margin:0;
+      font-family:"Quicksand","Segoe UI",Arial,sans-serif;
+      font-weight:700;
+      font-size:clamp(38px,7vw,76px);
+      background:linear-gradient(
+        135deg,
+        #7ec8ff 0%,
+        #9fdcff 18%,
+        #b7e8d6 34%,
+        #ffe7a8 50%,
+        #ffd3b6 66%,
+        #f7c6e8 82%,
+        #d6c7ff 100%
+      );
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow:0 6px 24px rgba(255,255,255,.45);
+      letter-spacing:.01em;
+    }
+    .tagline{margin:18px auto 8px;font-size:clamp(18px,3vw,28px);font-weight:700;color:#6d8fc9}
+    .sub{margin:0 auto 30px;color:#9a8bc0;font-size:clamp(15px,2vw,21px);font-weight:600}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    #teacherScreen{overflow:auto;padding:20px}
+    .teacher-wrap{width:min(1180px,100%);margin:auto;display:grid;gap:16px;padding-bottom:30px}
+    .teacher-head{padding:20px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .teacher-head h1{font-size:clamp(28px,4vw,44px)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .panel{padding:20px;display:grid;gap:13px}
+    .panel h2{margin:0 0 4px;color:#5a84cb;font-family:"Quicksand","Segoe UI",Arial,sans-serif;font-weight:700}
+    .student-list{display:grid;gap:12px}
+    .student-card{display:grid;grid-template-columns:100px 1fr auto;gap:12px;padding:12px;border-radius:22px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8)}
+    .preview{width:100px;height:100px;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,#dff7ff,#fff);display:grid;place-items:center;font-weight:900;color:#7aa4b8}
+    .preview img{width:100%;height:100%;object-fit:cover}
+    .fields{display:grid;gap:9px}
+    .row{display:grid;grid-template-columns:120px 1fr;gap:9px}
+    .student-actions{display:grid;gap:8px;align-content:start}
+    .student-save-btn{
+      background:rgba(255,255,255,.78);
+      color:#155d7d;
+    }
+    .student-save-btn.saved{
+      background:linear-gradient(135deg,#38bdf8,#7dd3fc,#bae6fd) !important;
+      color:#075985 !important;
+      box-shadow:0 10px 26px rgba(14,165,233,.32) !important;
+    }
+    #saveBtn.saved{
+      background:linear-gradient(135deg,#38bdf8,#7dd3fc,#bae6fd) !important;
+      color:#075985 !important;
+      box-shadow:0 10px 26px rgba(14,165,233,.32) !important;
+    }
+    .section-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .bottom-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .file-btn{border-radius:999px;padding:11px 18px;font-weight:800;cursor:pointer;background:rgba(255,255,255,.78);box-shadow:0 10px 26px rgba(53,139,190,.18)}
+    .file-btn input{display:none}
+    .check-setting-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 42px;
+      gap:9px;
+      align-items:center;
+      padding:2px 0;
+    }
+    .check-line{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      min-height:38px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .check-line input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      min-width:18px;
+      margin:0;
+      accent-color:#62c7f4;
+    }
+    .check-line span{line-height:1.25}
+    .audio-upload-btn{
+      width:42px;
+      height:42px;
+      min-width:42px;
+      padding:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(218,247,255,.86));
+      box-shadow:0 10px 24px rgba(53,139,190,.18);
+    }
+    .audio-upload-btn svg{
+      width:20px;
+      height:20px;
+      display:block;
+    }
+    .audio-file-name{
+      grid-column:1 / -1;
+      margin:-3px 0 2px 27px;
+      font-size:11px;
+      font-weight:700;
+      color:#6f92aa;
+      line-height:1.25;
+      min-height:14px;
+    }
+    .hidden-file-input{display:none}
+    #skyScreen{
+      perspective:1400px;
+      touch-action:manipulation;
+      transform-style:preserve-3d;
+    }
+    .sky-title{position:absolute;z-index:7;top:18px;left:50%;transform:translateX(-50%);width:min(820px,94vw);text-align:center;pointer-events:none}
+    .sky-title h1{
+      font-size:clamp(15px,2.5vw,29px);
+      background:none!important;
+      -webkit-background-clip:initial!important;
+      background-clip:initial!important;
+      color:#ffffff!important;
+      -webkit-text-fill-color:#ffffff!important;
+      text-shadow:
+        0 0 4px rgba(255,255,255,.95),
+        0 0 10px rgba(186,240,255,.72),
+        0 0 18px rgba(94,211,255,.48),
+        0 0 30px rgba(53,160,255,.28);
+    }
+    .sky-title p{
+      margin:4px 0 2px;
+      font-weight:700;
+      font-size:clamp(10px,1.2vw,12px);
+      color:#ffffff!important;
+      text-shadow:
+        0 0 4px rgba(255,255,255,.92),
+        0 0 9px rgba(190,244,255,.66),
+        0 0 16px rgba(96,214,255,.42),
+        0 0 25px rgba(48,158,255,.24);
+    }
+    .sky-title span{
+      font-weight:700;
+      color:#ffffff!important;
+      font-size:clamp(9px,1.1vw,11px);
+      display:block;
+      text-shadow:
+        0 0 4px rgba(255,255,255,.92),
+        0 0 9px rgba(190,244,255,.66),
+        0 0 16px rgba(96,214,255,.42),
+        0 0 25px rgba(48,158,255,.24);
+    }
+    .world{
+      position:absolute;
+      inset:0;
+      z-index:2;
+      transform-style:preserve-3d;
+      transform-origin:center center;
+      transform:scale(var(--zoom,1)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+      transition:transform .16s ease-out;
+      will-change:transform;
+    }
+    .billboard-3d{
+      transform-style:preserve-3d;
+      backface-visibility:hidden;
+    }
+    .rainbow-arc-layer{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      overflow:hidden;
+      opacity:1;
+      transition:opacity .45s ease, filter .45s ease;
+      filter:saturate(1.06) blur(.9px);
+    }
+    .rainbow-arc-layer.hidden{
+      opacity:0;
+    }
+    .rainbow-band{
+      position:absolute;
+      left:50%;
+      top:0vh;
+      transform:translateX(-50%);
+      border-style:solid;
+      border-bottom:0;
+      background:transparent;
+      border-radius:9999px 9999px 0 0;
+      mix-blend-mode:screen;
+      filter:blur(4.2px);
+    }
+    .rainbow-band::after{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      border-radius:inherit;
+      border:inherit;
+      border-bottom:0;
+      opacity:.42;
+      filter:blur(48px);
+      pointer-events:none;
+    }
+    .rainbow-band::before{
+      content:"";
+      position:absolute;
+      inset:-22px;
+      border-radius:inherit;
+      border:inherit;
+      border-bottom:0;
+      opacity:.18;
+      filter:blur(22px);
+      pointer-events:none;
+    }
+
+    /* 7 lớp màu cầu vồng, transparent khoảng 50%, chồng nhẹ để tạo chuyển màu gradient mềm */
+    .rainbow-band.r1{
+      width:240vw;height:146vw;min-width:2200px;min-height:1220px;top:-34vh;
+      border-width:96px;border-color:rgba(255,42,105,.22);
+    }
+    .rainbow-band.r1::after{border-color:rgba(255,138,146,.14)}
+    .rainbow-band.r2{
+      width:224vw;height:136vw;min-width:2050px;min-height:1140px;top:-28vh;
+      border-width:96px;border-color:rgba(255,142,34,.22);
+    }
+    .rainbow-band.r2::after{border-color:rgba(255,202,116,.14)}
+    .rainbow-band.r3{
+      width:208vw;height:126vw;min-width:1900px;min-height:1060px;top:-22vh;
+      border-width:96px;border-color:rgba(255,235,70,.22);
+    }
+    .rainbow-band.r3::after{border-color:rgba(214,235,122,.14)}
+    .rainbow-band.r4{
+      width:192vw;height:116vw;min-width:1750px;min-height:980px;top:-16vh;
+      border-width:96px;border-color:rgba(84,222,112,.22);
+    }
+    .rainbow-band.r4::after{border-color:rgba(132,231,191,.14)}
+    .rainbow-band.r5{
+      width:176vw;height:106vw;min-width:1600px;min-height:900px;top:-10vh;
+      border-width:96px;border-color:rgba(80,224,220,.22);
+    }
+    .rainbow-band.r5::after{border-color:rgba(129,210,244,.14)}
+    .rainbow-band.r6{
+      width:160vw;height:96vw;min-width:1450px;min-height:820px;top:-4vh;
+      border-width:96px;border-color:rgba(70,136,255,.22);
+    }
+    .rainbow-band.r6::after{border-color:rgba(152,157,255,.14)}
+    .rainbow-band.r7{
+      width:144vw;height:86vw;min-width:1300px;min-height:740px;top:2vh;
+      border-width:96px;border-color:rgba(166,100,255,.22);
+    }
+    .rainbow-band.r7::after{border-color:rgba(216,177,255,.14)}
+
+    .rainbow-toggle-btn.active{
+      background:linear-gradient(135deg,rgba(255,80,135,.88),rgba(255,216,80,.86),rgba(93,224,150,.86),rgba(98,194,255,.88)) !important;
+      color:#ffffff !important;
+      box-shadow:0 10px 28px rgba(98,158,255,.28) !important;
+    }
+    .sky-icon-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:48px;
+      padding:10px 14px;
+      line-height:1;
+    }
+    .sky-icon-btn svg{
+      width:20px;
+      height:20px;
+      display:block;
+      overflow:visible;
+      flex-shrink:0;
+    }
+    .floating-cloud{
+      position:absolute;width:380px;height:132px;border-radius:999px;background:rgba(255,255,255,.46);
+      filter:blur(2.6px);transform-style:preserve-3d;animation:floatCloudA 16s ease-in-out infinite alternate;
+      box-shadow:0 28px 62px rgba(75,143,182,.08), inset 0 -22px 48px rgba(170,225,246,.14), 0 0 42px rgba(255,255,255,.22);
+    }
+    .floating-cloud:before,.floating-cloud:after{
+      content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.60);filter:blur(3.1px);
+      box-shadow:0 0 34px rgba(255,255,255,.16);
+    }
+    .floating-cloud:before{width:130px;height:130px;left:45px;top:-66px}
+    .floating-cloud:after{width:158px;height:158px;right:25px;top:-82px}
+    .floating-cloud .puff{
+      position:absolute;border-radius:50%;background:rgba(255,255,255,.50);filter:blur(3px);
+      box-shadow:inset 0 -10px 28px rgba(170,225,246,.12), 0 0 30px rgba(255,255,255,.16);
+    }
+    .floating-cloud .p1{width:90px;height:90px;left:12px;top:-35px}
+    .floating-cloud .p2{width:118px;height:118px;left:120px;top:-74px}
+    .floating-cloud .p3{width:82px;height:82px;right:5px;top:-28px}
+
+    
+    .fc1{left:-22%;top:16%;transform:translateZ(-160px) rotateY(var(--counter-ry,0deg)) scale(1.30);animation-delay:-1s;opacity:.74}
+    .fc2{right:-20%;top:18%;transform:translateZ(-240px) rotateY(var(--counter-ry,0deg)) scale(1.10);animation-delay:-3s;opacity:.70}
+    .fc3{left:70%;top:-1%;transform:translateZ(-360px) rotateY(var(--counter-ry,0deg)) scale(.96);animation-delay:-5s;opacity:.60}
+    .fc4{left:-18%;bottom:14%;transform:translateZ(-420px) rotateY(var(--counter-ry,0deg)) scale(1.08);animation-delay:-7s;opacity:.66}
+    .fc5{right:6%;top:3%;transform:translateZ(-520px) rotateY(var(--counter-ry,0deg)) scale(.78);animation-delay:-9s;opacity:.56}
+    .fc6{left:10%;top:5%;transform:translateZ(-690px) rotateY(var(--counter-ry,0deg)) scale(1.24);animation-delay:-11s;opacity:.42}
+    .fc7{left:-24%;top:48%;transform:translateZ(-260px) rotateY(var(--counter-ry,0deg)) scale(1.04);animation-delay:-13s;opacity:.68}
+    .fc8{right:-23%;bottom:22%;transform:translateZ(-330px) rotateY(var(--counter-ry,0deg)) scale(1.12);animation-delay:-15s;opacity:.66}
+    .fc9{left:0%;top:0%;transform:translateZ(-470px) rotateY(var(--counter-ry,0deg)) scale(.58);animation-delay:-17s;opacity:.48}
+    .fc10{right:1%;top:42%;transform:translateZ(-590px) rotateY(var(--counter-ry,0deg)) scale(.60);animation-delay:-19s;opacity:.46}
+    .fc11{left:44%;bottom:-1%;transform:translateZ(-520px) rotateY(var(--counter-ry,0deg)) scale(.54);animation-delay:-21s;opacity:.44}
+    .fc12{right:16%;top:6%;transform:translateZ(-820px) rotateY(var(--counter-ry,0deg)) scale(.50);animation-delay:-23s;opacity:.38}
+    .fc13{left:-8%;top:7%;transform:translateZ(-810px) rotateY(var(--counter-ry,0deg)) scale(.50);animation-delay:-25s;opacity:.40}
+    .fc14{right:-8%;bottom:10%;transform:translateZ(-900px) rotateY(var(--counter-ry,0deg)) scale(.46);animation-delay:-27s;opacity:.38}
+    .fc15{left:2%;top:-5%;transform:translateZ(-1120px) rotateY(var(--counter-ry,0deg)) scale(.42);animation-delay:-29s;opacity:.30}
+    .fc16{left:11%;bottom:-4%;transform:translateZ(-760px) rotateY(var(--counter-ry,0deg)) scale(.48);animation-delay:-31s;opacity:.38}
+    .fc17{right:14%;top:-3%;transform:translateZ(-1080px) rotateY(var(--counter-ry,0deg)) scale(.40);animation-delay:-33s;opacity:.34}
+    .fc18{left:68%;top:-6%;transform:translateZ(-1260px) rotateY(var(--counter-ry,0deg)) scale(.36);animation-delay:-35s;opacity:.28}
+    .fc19{right:24%;bottom:-2%;transform:translateZ(-850px) rotateY(var(--counter-ry,0deg)) scale(.42);animation-delay:-37s;opacity:.34}
+    .fc20{left:96%;top:28%;transform:translateZ(-760px) rotateY(var(--counter-ry,0deg)) scale(.42);animation-delay:-39s;opacity:.34}
+    .fc21{left:-18%;top:3%;transform:translateZ(-1180px) rotateY(var(--counter-ry,0deg)) scale(.36);animation-delay:-41s;opacity:.30}
+    .fc22{right:-18%;top:4%;transform:translateZ(-1240px) rotateY(var(--counter-ry,0deg)) scale(.38);animation-delay:-43s;opacity:.30}
+    .fc23{left:-4%;top:66%;transform:translateZ(-1040px) rotateY(var(--counter-ry,0deg)) scale(.42);animation-delay:-45s;opacity:.32}
+    .fc24{right:-4%;top:64%;transform:translateZ(-1120px) rotateY(var(--counter-ry,0deg)) scale(.40);animation-delay:-47s;opacity:.30}
+    .fc25{left:28%;top:-10%;transform:translateZ(-1450px) rotateY(var(--counter-ry,0deg)) scale(.32);animation-delay:-49s;opacity:.24}
+    .fc26{left:89%;bottom:4%;transform:translateZ(-830px) rotateY(var(--counter-ry,0deg)) scale(.46);animation-delay:-51s;opacity:.36}
+    .fc27{left:-18%;bottom:2%;transform:translateZ(-780px) rotateY(var(--counter-ry,0deg)) scale(.50);animation-delay:-53s;opacity:.38}
+    .fc28{right:-12%;top:70%;transform:translateZ(-1100px) rotateY(var(--counter-ry,0deg)) scale(.40);animation-delay:-55s;opacity:.32}
+    .fc29{left:18%;bottom:-10%;transform:translateZ(-1400px) rotateY(var(--counter-ry,0deg)) scale(.34);animation-delay:-57s;opacity:.26}
+    .fc30{right:18%;bottom:8%;transform:translateZ(-1560px) rotateY(var(--counter-ry,0deg)) scale(.30);animation-delay:-59s;opacity:.22}
+    .fc31{left:-26%;top:31%;transform:translateZ(-210px) rotateY(var(--counter-ry,0deg)) scale(.92);animation-delay:-61s;opacity:.56}
+    .fc32{right:-26%;top:34%;transform:translateZ(-260px) rotateY(var(--counter-ry,0deg)) scale(.88);animation-delay:-63s;opacity:.54}
+    .fc33{left:60%;top:-10%;transform:translateZ(-520px) rotateY(var(--counter-ry,0deg)) scale(.76);animation-delay:-65s;opacity:.38}
+    .fc34{left:36%;bottom:-14%;transform:translateZ(-560px) rotateY(var(--counter-ry,0deg)) scale(.78);animation-delay:-67s;opacity:.38}
+    .fc35{left:4%;top:31%;transform:translateZ(-680px) rotateY(var(--counter-ry,0deg)) scale(.54);animation-delay:-69s;opacity:.38}
+    .fc36{right:4%;top:29%;transform:translateZ(-700px) rotateY(var(--counter-ry,0deg)) scale(.54);animation-delay:-71s;opacity:.38}
+    .fc37{left:22%;bottom:18%;transform:translateZ(-980px) rotateY(var(--counter-ry,0deg)) scale(.38);animation-delay:-73s;opacity:.28}
+    .fc38{right:20%;bottom:20%;transform:translateZ(-1020px) rotateY(var(--counter-ry,0deg)) scale(.38);animation-delay:-75s;opacity:.28}
+
+    .fc1,.fc6,.fc11,.fc16,.fc21,.fc26,.fc31,.fc36{animation-name:floatCloudA;animation-duration:17s}
+    .fc2,.fc7,.fc12,.fc17,.fc22,.fc27,.fc32,.fc37{animation-name:floatCloudB;animation-duration:19s}
+    .fc3,.fc8,.fc13,.fc18,.fc23,.fc28,.fc33,.fc38{animation-name:floatCloudC;animation-duration:21s}
+    .fc4,.fc5,.fc9,.fc10,.fc14,.fc15,.fc19,.fc20,.fc24,.fc25,.fc29,.fc30,.fc34,.fc35{animation-name:floatCloudD;animation-duration:18s}
+
+    @keyframes floatCloudA{from{translate:-82px -16px}to{translate:102px 24px}}
+    @keyframes floatCloudB{from{translate:78px 18px}to{translate:-96px -16px}}
+    @keyframes floatCloudC{from{translate:-28px 52px}to{translate:34px -58px}}
+    @keyframes floatCloudD{from{translate:54px -42px}to{translate:-62px 48px}}
+
+    .main-cloud{
+      position:absolute;left:50%;top:38%;width:min(700px,92vw);height:260px;transform:translate(-50%,-50%) translateZ(135px) rotateY(var(--counter-ry,0deg));
+      cursor:pointer;transform-style:preserve-3d;filter:drop-shadow(0 30px 45px rgba(75,143,182,.14));
+      animation:cloudBreathe 3.6s ease-in-out infinite;
+    }
+    @keyframes cloudBreathe{0%,100%{scale:1}50%{scale:1.025}}
+    .main-cloud.pulse{animation:cloudPulse .42s ease-out, cloudBreathe 3.6s ease-in-out infinite .42s}
+    @keyframes cloudPulse{0%{scale:1}45%{scale:1.13;filter:drop-shadow(0 0 38px rgba(255,255,255,.95))}100%{scale:1}}
+    .blob{
+      position:absolute;border-radius:50%;background:rgba(255,255,255,.80);filter:blur(3.8px);
+      box-shadow:inset -20px -18px 56px rgba(166,221,244,.12), inset 14px 15px 56px rgba(255,255,255,.70), 0 0 32px rgba(255,255,255,.12);
+    }
+    .b1{width:34%;height:82%;left:3%;bottom:7%}.b2{width:40%;height:104%;left:20%;bottom:17%}.b3{width:48%;height:116%;left:40%;bottom:12%}.b4{width:36%;height:86%;right:3%;bottom:6%}
+    .base{
+      position:absolute;width:98%;height:66%;left:1%;bottom:0;border-radius:999px;background:rgba(255,255,255,.84);filter:blur(3px);
+      box-shadow:inset 0 -22px 64px rgba(145,211,240,.16), 0 0 32px rgba(255,255,255,.12);
+    }
+    .glow{
+      position:absolute;inset:-38px;border-radius:999px;
+      background:radial-gradient(circle,rgba(255,255,255,.36),rgba(255,255,255,.10) 48%,transparent 74%);
+      filter:blur(46px);z-index:-1;
+    }
+    #dropsLayer{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+    .drop{
+      position:absolute;width:96px;height:128px;pointer-events:auto;cursor:pointer;transform-style:preserve-3d;
+      transition:.22s filter;
+      animation:
+        dropHover var(--dur,7s) ease-in-out infinite alternate,
+        dropGlow calc(var(--dur,7s) * 1.35) ease-in-out infinite alternate;
+      will-change:transform, filter, margin;
+    }
+    .drop-inner{
+      position:absolute;
+      inset:0;
+      transform-origin:50% 18%;
+      animation:
+        dropWobble calc(var(--dur,7s) * .78) ease-in-out infinite alternate,
+        dropTilt calc(var(--dur,7s) * 1.08) ease-in-out infinite alternate;
+      will-change:transform;
+    }
+    @keyframes dropHover{
+      0%{margin-top:-24px}
+      50%{margin-top:26px}
+      100%{margin-top:-18px}
+    }
+    @keyframes dropWobble{
+      0%{translate:-22px 0}
+      50%{translate:20px -6px}
+      100%{translate:-16px 8px}
+    }
+    @keyframes dropTilt{
+      0%{rotate:-5deg}
+      50%{rotate:5deg}
+      100%{rotate:-3deg}
+    }
+    @keyframes dropGlow{
+      0%{filter:drop-shadow(0 12px 20px rgba(49,126,170,.16))}
+      50%{filter:drop-shadow(0 24px 34px rgba(49,126,170,.30))}
+      100%{filter:drop-shadow(0 10px 18px rgba(49,126,170,.14))}
+    }
+    .drop-body{
+      position:absolute;inset:0;
+      clip-path:path("M 48 4 C 78 34 93 70 87 95 C 83 114 68 126 48 126 C 28 126 13 114 9 95 C 3 70 18 34 48 4 Z");
+      background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(123,211,247,.36) 42%,rgba(20,111,157,.36));
+      box-shadow:inset 10px 8px 18px rgba(255,255,255,.78),inset -12px -15px 22px rgba(30,111,158,.28),0 18px 32px rgba(49,126,170,.18);
+      border:1px solid rgba(255,255,255,.7);
+    }
+    .drop-body:after{content:"";position:absolute;left:22px;top:24px;width:26px;height:52px;border-radius:50%;background:rgba(255,255,255,.34);transform:rotate(18deg);filter:blur(1px)}
+    .drop-photo{
+      position:absolute;left:18px;top:44px;width:60px;height:60px;border-radius:50%;object-fit:cover;
+      box-shadow:0 0 0 4px rgba(255,255,255,.45);opacity:.95;
+    }
+    .drop-name{
+      position:absolute;left:50%;top:132px;transform:translateX(-50%);white-space:nowrap;padding:7px 11px;border-radius:999px;
+      background:rgba(255,255,255,.9);font-size:13px;font-weight:900;color:#11617f;box-shadow:0 8px 20px rgba(40,111,151,.18);
+      display:none;
+    }
+    .drop:hover{filter:drop-shadow(0 0 18px rgba(255,255,255,.98))}
+    .drop:hover .drop-name{display:block}
+    .drop:hover{z-index:30}
+    .drop.placeholder .drop-photo{display:none}
+    .drop.placeholder .drop-body:before{content:"♡";position:absolute;left:0;right:0;top:53px;text-align:center;font-size:30px;color:rgba(255,255,255,.9)}
+    .sparkle{
+      position:absolute;
+      width:var(--size,8px);
+      height:var(--size,8px);
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, rgba(255,255,255,.98), rgba(215,244,255,.95) 38%, rgba(152,221,255,.72) 68%, rgba(152,221,255,0) 100%);
+      box-shadow:
+        0 0 10px rgba(255,255,255,.95),
+        0 0 22px rgba(172,230,255,.78),
+        0 0 36px rgba(138,210,255,.38);
+      animation:spark var(--life,1.5s) cubic-bezier(.18,.72,.22,1) forwards;
+      pointer-events:none;
+      mix-blend-mode:screen;
+    }
+    .sparkle:before,
+    .sparkle:after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      background:rgba(255,255,255,.88);
+      border-radius:999px;
+      filter:blur(.2px);
+    }
+    .sparkle:before{width:150%;height:18%}
+    .sparkle:after{width:18%;height:150%}
+
+    .stardust{
+      position:absolute;
+      width:var(--dust-size,12px);
+      height:var(--dust-size,12px);
+      border-radius:50%;
+      pointer-events:none;
+      opacity:0;
+      mix-blend-mode:screen;
+      background:
+        radial-gradient(circle at 38% 35%, rgba(255,255,255,.98), rgba(255,255,255,.92) 28%, rgba(236,248,255,.72) 54%, rgba(236,248,255,0) 100%);
+      box-shadow:
+        0 0 12px rgba(255,255,255,.95),
+        0 0 28px rgba(236,248,255,.85),
+        0 0 52px rgba(214,239,255,.42);
+      animation:stardustFloat var(--dust-life,3.6s) ease-out forwards;
+    }
+    .stardust:before,
+    .stardust:after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      filter:blur(.18px);
+    }
+    .stardust:before{width:170%;height:14%}
+    .stardust:after{width:14%;height:170%}
+
+    @keyframes spark{
+      0%{opacity:0;transform:translate(0,0) scale(.3) rotate(0deg)}
+      18%{opacity:1;transform:translate(calc(var(--x) * .16),calc(var(--y) * .16)) scale(1.05) rotate(40deg)}
+      100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.18) rotate(160deg)}
+    }
+
+    @keyframes stardustFloat{
+      0%{opacity:0;transform:translate(0,0) scale(.35)}
+      12%{opacity:1;transform:translate(calc(var(--dust-x) * .10),calc(var(--dust-y) * .10)) scale(1)}
+      58%{opacity:.95;transform:translate(calc(var(--dust-x) * .62),calc(var(--dust-y) * .62)) scale(1.08)}
+      100%{opacity:0;transform:translate(var(--dust-x),var(--dust-y)) scale(.82)}
+    }
+    .message{
+      position:absolute;z-index:8;left:50%;transform:translateX(-50%);width:min(600px,90vw);padding:16px 20px;text-align:center;
+      font-size:17px;font-weight:900;color:#236985;
+    }
+    #waitingMsg{display:none!important}#completeMsg{bottom:104px}
+    .sky-controls{position:absolute;z-index:10;left:50%;bottom:16px;transform:translateX(-50%);width:min(980px,calc(100vw - 24px));padding:12px;display:flex;gap:9px;flex-wrap:wrap;justify-content:center;align-items:center}
+    .rotate-control,
+    .zoom-control{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      box-shadow:0 10px 26px rgba(53,139,190,.15);
+      font-size:13px;
+      font-weight:900;
+      color:#155d7d;
+    }
+    .rotate-control input[type="range"],
+    .zoom-control input[type="range"]{
+      width:120px;
+      padding:0;
+      accent-color:#49bdec;
+    }
+    .rotate-control input[type="checkbox"]{
+      width:auto;
+      transform:scale(1.05);
+    }
+    .zoom-value{
+      min-width:42px;
+      text-align:right;
+      color:#5c7ead;
+      font-weight:900;
+    }
+    .zoom-icon{
+      width:20px;
+      height:20px;
+      display:block;
+      flex-shrink:0;
+    }
+    .icon-only{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:48px;
+      padding:10px 14px;
+      line-height:1;
+    }
+    .icon-only svg{
+      width:18px;
+      height:18px;
+      display:block;
+      overflow:visible;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      flex-shrink:0;
+    }
+    .icon-only .icon-outline{
+      stroke:#66b9e6;
+      fill:none;
+    }
+    .icon-only .icon-fill{
+      stroke:#66b9e6;
+    }
+    .edit-icon-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:48px;
+      padding:10px 14px;
+      line-height:1;
+    }
+    .edit-icon-btn svg{
+      width:18px;
+      height:18px;
+      display:block;
+      overflow:visible;
+      flex-shrink:0;
+    }
+    .modal-backdrop{position:absolute;z-index:30;inset:0;display:grid;place-items:center;background:rgba(94,174,221,.22);backdrop-filter:blur(12px);padding:16px}
+    .modal{position:relative;width:min(860px,94vw);max-height:90vh;overflow:auto;background:rgba(255,255,255,.92);border-radius:34px;display:grid;grid-template-columns:42% 1fr;box-shadow:0 30px 90px rgba(35,107,150,.3)}
+    .close{position:absolute;right:14px;top:14px;width:42px;height:42px;padding:0;font-size:27px;z-index:2}
+    .modal-nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:3;
+      width:42px;
+      height:42px;
+      padding:0;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(218,247,255,.86));
+      box-shadow:0 12px 30px rgba(53,139,190,.22);
+      border:1px solid rgba(255,255,255,.86);
+    }
+    .modal-nav:hover{
+      transform:translateY(-50%) scale(1.06);
+    }
+    .modal-nav.prev{left:12px}
+    .modal-nav.next{right:12px}
+    .modal-nav svg{
+      width:19px;
+      height:19px;
+      display:block;
+      fill:none;
+      stroke:#5aaee2;
+      stroke-width:3;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .modal-img{min-height:410px;background:linear-gradient(135deg,#c7f0ff,#fff);display:grid;place-items:center;padding:22px}
+    .modal-img img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:34px;box-shadow:0 18px 44px rgba(50,130,178,.24)}
+    .modal-content{padding:48px 34px 34px;display:grid;align-content:center}
+    .modal-content h2{margin:0 0 12px;color:#5a84cb;font-size:clamp(30px,5vw,52px);font-family:"Quicksand","Segoe UI",Arial,sans-serif;font-weight:700}
+    .modal-content .msg{font-size:19px;line-height:1.6;font-weight:700;color:#416f86}
+    .modal-content .line{margin:7px 0 0;color:#6e94a5;font-weight:900}
+    @media(max-width:820px){
+      #teacherScreen{padding:10px}.teacher-head,.admin-grid,.student-card,.modal{grid-template-columns:1fr}.teacher-head{align-items:stretch}.toolbar{justify-content:flex-start}
+      .student-card{grid-template-columns:1fr}.preview{width:100%;height:190px}.row{grid-template-columns:1fr}.student-actions{grid-template-columns:repeat(3,1fr)}
+      .sky-title{top:10px}.sky-title h1{font-size:clamp(14px,4.4vw,18px)}.sky-title p{font-size:clamp(9px,2.6vw,11px)}.sky-title span{font-size:clamp(8px,2.4vw,10px)}.sky-controls{bottom:8px;border-radius:22px}.sky-controls button{padding:8px 10px;font-size:12px}
+      .rotate-control,.zoom-control{width:100%;justify-content:center;border-radius:18px}.rotate-control input[type="range"],.zoom-control input[type="range"]{width:min(160px,38vw)}
+      .main-cloud{top:37%;width:94vw;height:195px}.floating-cloud{width:240px;height:82px}.drop{width:76px;height:102px}.drop-photo{left:14px;top:35px;width:48px;height:48px}.drop-name{top:106px;font-size:12px}
+      .rainbow-band{border-width:54px !important;min-width:980px !important;min-height:700px !important;filter:blur(2.6px)}
+      .rainbow-band::after{inset:-28px;filter:blur(34px);opacity:.42}
+      .rainbow-band::before{inset:-14px;filter:blur(16px);opacity:.16}
+      .rainbow-band.r1{width:252vw;height:178vw;top:-24vh}
+      .rainbow-band.r2{width:232vw;height:165vw;top:-19vh}
+      .rainbow-band.r3{width:212vw;height:152vw;top:-14vh}
+      .rainbow-band.r4{width:192vw;height:139vw;top:-9vh}
+      .rainbow-band.r5{width:172vw;height:126vw;top:-4vh}
+      .rainbow-band.r6{width:152vw;height:113vw;top:1vh}
+      .rainbow-band.r7{width:132vw;height:100vw;top:6vh}
+      #completeMsg{bottom:122px;font-size:14px}.modal-img{min-height:auto}.modal-content{padding:28px 22px}.modal-content .msg{font-size:16px}
+      .modal-nav{width:36px;height:36px}.modal-nav.prev{left:8px}.modal-nav.next{right:8px}.modal-nav svg{width:16px;height:16px}
+    }
+  </style>
+</head>
+<body>
+  <section id="startScreen" class="screen">
+        <div class="start-card glass">
+      <p class="tiny">Kỉ niệm cuối năm</p>
+      <h1 id="startTitle">Hẹn gặp lại sau mưa hạ</h1>
+      <p id="startTagline" class="tagline">Triệu hạt mưa, không hạt mưa nào rơi nhầm chỗ.</p>
+      <p id="startSub" class="sub">60 giọt mưa nhỏ – một bầu trời kỉ niệm.</p>
+      <div class="actions">
+        <button class="primary" id="teacherBtn">Tôi là Giáo viên</button>
+        <button id="studentBtn">Tôi là Phụ huynh / Học sinh</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="teacherScreen" class="screen hidden">
+    <div class="teacher-wrap">
+      <header class="teacher-head glass">
+        <div>
+          <p class="tiny">Chế độ Giáo viên</p>
+          <h1>Quản trị Hẹn gặp lại sau mưa hạ</h1>
+          <p>Đã thêm: <strong id="countText">0 / 60 học sinh</strong></p>
+        </div>
+        <div class="toolbar">
+          <button id="backStart1">Về màn hình đầu</button>
+          <button class="primary small" id="previewBtn">Xem trước kết quả</button>
+        </div>
+      </header>
+
+      <div class="admin-grid">
+        <section class="panel glass">
+          <h2>Thông tin website</h2>
+          <label>Tên website<input id="siteTitle"></label>
+          <label>Tên lớp<input id="className"></label>
+          <label>Năm học<input id="schoolYear"></label>
+          <label>Tên giáo viên<input id="teacherName"></label>
+          <label>Thông điệp chính<input id="tagline"></label>
+          <label>Thông điệp phụ<input id="subMessage"></label>
+          <label>Lời nhắn chung<textarea id="generalMessage"></textarea></label>
+        </section>
+
+        <section class="panel glass">
+          <h2>Tùy chỉnh giao diện</h2>
+          <label>Màu trời phía trên<input id="skyTop" type="color"></label>
+          <label>Màu trời phía dưới<input id="skyBottom" type="color"></label>
+          <label>Kiểu mây<select id="cloudStyle"><option value="soft">Mềm mại</option><option value="round">Tròn bồng bềnh</option><option value="dreamy">Mơ màng</option></select></label>
+          <label>Tốc độ rơi của hạt mưa<input id="rainSpeed" type="range" min="0.2" max="1.5" step="0.05"></label>
+          <label>Số hạt mưa mỗi lần click<input id="dropsPerClick" type="number" min="1" max="10"></label>
+          <div class="check-setting-row">
+            <label class="check-line"><input id="showNames" type="checkbox"><span>Hiển thị tên học sinh khi chạm</span></label>
+          </div>
+          <div class="check-setting-row">
+            <label class="check-line"><input id="musicEnabled" type="checkbox"><span>Bật nhạc nền mặc định</span></label>
+            <button type="button" class="audio-upload-btn" id="chooseMusicBtn" aria-label="Chọn file nhạc nền" title="Chọn file nhạc nền"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="gradMusicIcon" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8fbff"/><stop offset="48%" stop-color="#aeeaff"/><stop offset="100%" stop-color="#70c4ff"/></linearGradient></defs><path fill="url(#gradMusicIcon)" d="M9 18.3A3.2 3.2 0 1 1 6.5 15.2V6.6c0-.7.4-1.2 1.1-1.4l8.5-2.1c.8-.2 1.5.4 1.5 1.2v10.2a3.2 3.2 0 1 1-2.2-3V6.7l-6.7 1.7v9.9H9Z"></path></svg></button>
+            <div class="audio-file-name" id="musicFileName">Chưa chọn file nhạc nền</div>
+          </div>
+          <div class="check-setting-row">
+            <label class="check-line"><input id="soundEnabled" type="checkbox"><span>Bật hiệu ứng âm thanh</span></label>
+            <button type="button" class="audio-upload-btn" id="chooseCloudSoundBtn" aria-label="Chọn file âm thanh đám mây" title="Chọn file âm thanh đám mây"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="gradSpeakerIcon" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8fbff"/><stop offset="48%" stop-color="#aeeaff"/><stop offset="100%" stop-color="#70c4ff"/></linearGradient></defs><path fill="url(#gradSpeakerIcon)" d="M4 9.2c0-.7.5-1.2 1.2-1.2h3.1l4.6-3.7c.8-.6 2-.1 2 1v13.4c0 1.1-1.2 1.6-2 1l-4.6-3.7H5.2A1.2 1.2 0 0 1 4 14.8V9.2Z"></path><path fill="url(#gradSpeakerIcon)" d="M17.2 8.1c.4-.3.9-.2 1.2.2a6.2 6.2 0 0 1 0 7.4.9.9 0 0 1-1.4-1.1 4.4 4.4 0 0 0 0-5.2.9.9 0 0 1 .2-1.3Z"></path><path fill="url(#gradSpeakerIcon)" d="M19.7 5.7c.4-.3.9-.2 1.2.2a10.2 10.2 0 0 1 0 12.2.9.9 0 1 1-1.4-1.1 8.4 8.4 0 0 0 0-10 .9.9 0 0 1 .2-1.3Z"></path></svg></button>
+            <div class="audio-file-name" id="cloudSoundFileName">Chưa chọn file âm thanh đám mây</div>
+          </div>
+          <div class="check-setting-row">
+            <label class="check-line"><input id="sparkleEnabled" type="checkbox"><span>Bật hiệu ứng lấp lánh</span></label>
+          </div>
+          <input id="musicFileInput" class="hidden-file-input" type="file" accept="audio/*">
+          <input id="cloudSoundFileInput" class="hidden-file-input" type="file" accept="audio/*">
+        </section>
+      </div>
+
+      <section class="panel glass">
+        <div class="section-row">
+          <h2>Danh sách học sinh</h2>
+          <button class="primary small" id="addStudentBtn">Thêm học sinh</button>
+        </div>
+        <div id="studentList" class="student-list"></div>
+        <div class="bottom-actions">
+          <button id="saveBtn">Lưu dữ liệu</button>
+          <button id="exportBtn">Xuất dữ liệu</button>
+          <label class="file-btn">Nhập dữ liệu<input id="importInput" type="file" accept="application/json"></label>
+          <button class="danger" id="clearBtn">Xóa toàn bộ dữ liệu</button>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section id="skyScreen" class="screen hidden">
+    <div id="rainbowArcLayer" class="rainbow-arc-layer hidden" aria-hidden="true">
+      <div class="rainbow-band r1"></div>
+      <div class="rainbow-band r2"></div>
+      <div class="rainbow-band r3"></div>
+      <div class="rainbow-band r4"></div>
+      <div class="rainbow-band r5"></div>
+      <div class="rainbow-band r6"></div>
+      <div class="rainbow-band r7"></div>
+    </div>
+        <div class="sky-title">
+      <h1 id="skyTitle">Mây yêu thương</h1>
+      <p id="skyTagline">Triệu hạt mưa, không hạt mưa nào rơi nhầm chỗ.</p>
+      <span id="skySub">@uynfuu – một bầu trời kỉ niệm.</span>
+    </div>
+    <div class="world" id="world">
+      <div class="floating-cloud fc1 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc2 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc3 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc4 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc5 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc6 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc7 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc8 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc9 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc10 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc11 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc12 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc13 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc14 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc15 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc16 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc17 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc18 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc19 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc20 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc21 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc22 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc23 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc24 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc25 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc26 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc27 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc28 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc29 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc30 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc31 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc32 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc33 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc34 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc35 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc36 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc37 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="floating-cloud fc38 billboard-3d"><span class="puff p1"></span><span class="puff p2"></span><span class="puff p3"></span></div>
+      <div class="main-cloud billboard-3d" id="mainCloud" title="Chạm vào đám mây">
+        <div class="glow"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="base"></div>
+      </div>
+      <div id="dropsLayer"></div>
+    </div>
+    <div id="waitingMsg" class="message glass hidden"></div>
+    <div id="completeMsg" class="message glass hidden"></div>
+    <div class="sky-controls glass">
+      <button id="musicBtn" class="sky-icon-btn" aria-label="Bật / tắt nhạc" title="Bật / tắt nhạc">Bật nhạc</button>
+      <button id="rainbowToggleBtn" class="rainbow-toggle-btn sky-icon-btn" aria-label="Bật / tắt cầu vồng" title="Bật / tắt cầu vồng">Cầu vồng</button>
+      <label class="rotate-control">
+        <input id="autoRotate360" type="checkbox">
+        Xoay 360°
+        <input id="rotateSpeed360" type="range" min="0.1" max="2.5" step="0.1" value="0.6">
+      </label>
+      <label class="zoom-control" title="Phóng to / thu nhỏ">
+        <svg class="zoom-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="gradZoomIcon" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e9fbff"/>
+              <stop offset="48%" stop-color="#b8efff"/>
+              <stop offset="100%" stop-color="#72c8ff"/>
+            </linearGradient>
+          </defs>
+          <circle cx="10.5" cy="10.5" r="6.2" fill="none" stroke="url(#gradZoomIcon)" stroke-width="2.8"></circle>
+          <path d="M15.2 15.2 L21 21" fill="none" stroke="url(#gradZoomIcon)" stroke-width="3" stroke-linecap="round"></path>
+        </svg>
+        <input id="pageZoomRange" type="range" min="0" max="200" step="5" value="100">
+        <span id="pageZoomValue" class="zoom-value">100%</span>
+      </label>
+      <button id="rainAllBtn" class="icon-only" aria-label="Cho mưa rơi hết" title="Cho mưa rơi hết">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradDrop" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#dff6ff"/>
+            <stop offset="45%" stop-color="#9fe3ff"/>
+            <stop offset="100%" stop-color="#69bfff"/>
+          </linearGradient>
+        </defs>
+        <path class="icon-fill" fill="url(#gradDrop)" d="M12 2 C15.6 6.2 19 9.3 19 13.4 A7 7 0 1 1 5 13.4 C5 9.3 8.4 6.2 12 2 Z"></path>
+      </svg>
+    </button>
+      <button id="refreshSkyBtn" class="icon-only" aria-label="Làm mới bầu trời" title="Làm mới bầu trời">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradRefresh" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#e5f9ff"/>
+            <stop offset="45%" stop-color="#abebff"/>
+            <stop offset="100%" stop-color="#73c6ff"/>
+          </linearGradient>
+        </defs>
+        <path class="icon-fill" fill="none" stroke="url(#gradRefresh)" d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+        <path class="icon-fill" fill="url(#gradRefresh)" d="M21 3v6h-6 L17.3 5.9 Z"></path>
+      </svg>
+    </button>
+      <button id="backStart2" class="icon-only" aria-label="Quay lại màn hình ban đầu" title="Quay lại màn hình ban đầu">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradBack" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#e4f8ff"/>
+            <stop offset="48%" stop-color="#a8e8ff"/>
+            <stop offset="100%" stop-color="#6dbfff"/>
+          </linearGradient>
+        </defs>
+        <path class="icon-fill" fill="url(#gradBack)" d="M11 5 L4 12 L11 19 L11 14 L20 14 L20 10 L11 10 Z"></path>
+      </svg>
+    </button>
+      <button id="backTeacherBtn" class="primary small hidden edit-icon-btn" aria-label="Quay lại chỉnh sửa" title="Quay lại chỉnh sửa"><svg viewBox="0 0 24 24" aria-hidden="true">
+  <defs>
+    <linearGradient id="gradPencilEdit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8fbff"/>
+      <stop offset="45%" stop-color="#b8ecff"/>
+      <stop offset="100%" stop-color="#77c8ff"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#gradPencilEdit)" d="M15.8 3.5a2 2 0 0 1 2.8 0l1.1 1.1a2 2 0 0 1 0 2.8l-9.9 9.9-4.4 1.2 1.2-4.4 9.2-9.2z"></path>
+  <path fill="url(#gradPencilEdit)" d="M14.4 4.9l4.7 4.7-.9.9-4.7-4.7z"></path>
+  <path fill="url(#gradPencilEdit)" d="M5.9 18.1l2 2-2.8.8z"></path>
+</svg></button>
+    </div>
+    <audio id="bgMusic" loop></audio>
+  </section>
+
+  <div id="modalRoot"></div>
+
+<script>
+const KEY = "dam_may_yeu_thuong_single_html_v1";
+const DEFAULT_DATA = {
+  siteTitle:"Hẹn gặp lại sau mưa hạ",
+  className:"Lớp 1/3",
+  schoolYear:"2025 - 2026",
+  teacherName:"Cô giáo của các em",
+  tagline:"Triệu hạt mưa, không hạt mưa nào rơi nhầm chỗ.",
+  subMessage:"60 giọt mưa nhỏ – một bầu trời kỉ niệm.",
+  generalMessage:"Mỗi em là một giọt mưa trong trẻo, góp phần làm nên bầu trời kỉ niệm thật đẹp của lớp mình.",
+  settings:{skyColorTop:"#80d8ff",skyColorBottom:"#ffffff",cloudStyle:"soft",rainSpeed:.55,dropsPerClick:4,showStudentNames:true,musicEnabled:false,soundEnabled:true,sparkleEnabled:true,musicFile:"",musicFileName:"",cloudSoundFile:"",cloudSoundFileName:""},
+  students:[]
+};
+let data = load();
+let screen = "start";
+let previewFromTeacher = false;
+let visibleIds = [];
+let lastSavedStudentId = "";
+let musicOn = false;
+let skyMotionBound = false;
+let skyMotion = { rx: 0, ry: 0, targetRx: 0, targetRy: 0 };
+let autoRotate360 = true;
+let rotateSpeed360 = 0.6;
+let rotateAngle360 = 0;
+let pageZoomPercent = 100;
+let rainbowArcOn = false;
+
+function $(id){return document.getElementById(id)}
+function uid(){return "s_"+Date.now()+"_"+Math.random().toString(16).slice(2)}
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(!raw) return structuredClone(DEFAULT_DATA);
+    const parsed=JSON.parse(raw);
+    return {...DEFAULT_DATA,...parsed,settings:{...DEFAULT_DATA.settings,...(parsed.settings||{})},students:Array.isArray(parsed.students)?parsed.students:[]};
+  }catch(e){return structuredClone(DEFAULT_DATA)}
+}
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(data));
+    return true;
+  }catch(error){
+    console.warn("Không thể lưu dữ liệu do vượt dung lượng trình duyệt:", error);
+    alert("Dữ liệu đang vượt dung lượng lưu của trình duyệt. Hãy nén ảnh nhỏ hơn hoặc dùng chức năng Xuất dữ liệu để sao lưu.");
+    return false;
+  }
+}
+function show(which){
+  screen=which;
+  ["startScreen","teacherScreen","skyScreen"].forEach(id=>$(id).classList.add("hidden"));
+  if(which==="start") $("startScreen").classList.remove("hidden");
+  if(which==="teacher") {$("teacherScreen").classList.remove("hidden"); renderTeacher();}
+  if(which==="sky") {$("skyScreen").classList.remove("hidden"); initSky();}
+  updateBasics();
+}
+function updateBasics(){
+  document.documentElement.style.setProperty("--sky-top",data.settings.skyColorTop);
+  document.documentElement.style.setProperty("--sky-bottom",data.settings.skyColorBottom);
+  $("startTitle").textContent=data.siteTitle;
+  $("startTagline").textContent=data.tagline;
+  $("startSub").textContent=data.subMessage;
+  $("skyTitle").textContent=data.siteTitle;
+  $("skyTagline").textContent=data.tagline;
+  $("skySub").textContent=data.subMessage;
+}
+function bindFields(){
+  const fields=["siteTitle","className","schoolYear","teacherName","tagline","subMessage","generalMessage"];
+  fields.forEach(id=>$(id).addEventListener("input",e=>{data[id]=e.target.value; save(); updateBasics();}));
+  const settingsMap={skyTop:"skyColorTop",skyBottom:"skyColorBottom",cloudStyle:"cloudStyle",rainSpeed:"rainSpeed",dropsPerClick:"dropsPerClick",showNames:"showStudentNames",musicEnabled:"musicEnabled",soundEnabled:"soundEnabled",sparkleEnabled:"sparkleEnabled"};
+  Object.entries(settingsMap).forEach(([id,key])=>{
+    $(id).addEventListener("input",e=>{
+      const el=e.target;
+      data.settings[key]=el.type==="checkbox"?el.checked:(el.type==="number"||el.type==="range"?Number(el.value):el.value);
+      save(); updateBasics();
+    });
+    $(id).addEventListener("change",e=>{
+      const el=e.target;
+      data.settings[key]=el.type==="checkbox"?el.checked:(el.type==="number"||el.type==="range"?Number(el.value):el.value);
+      save(); updateBasics();
+    });
+  });
+}
+function renderTeacher(){
+  $("countText").textContent=`${data.students.length} / 60 học sinh`;
+  $("siteTitle").value=data.siteTitle; $("className").value=data.className; $("schoolYear").value=data.schoolYear; $("teacherName").value=data.teacherName;
+  $("tagline").value=data.tagline; $("subMessage").value=data.subMessage; $("generalMessage").value=data.generalMessage;
+  $("skyTop").value=data.settings.skyColorTop; $("skyBottom").value=data.settings.skyColorBottom; $("cloudStyle").value=data.settings.cloudStyle;
+  $("rainSpeed").value=data.settings.rainSpeed; $("dropsPerClick").value=data.settings.dropsPerClick;
+  $("showNames").checked=data.settings.showStudentNames; $("musicEnabled").checked=data.settings.musicEnabled; $("soundEnabled").checked=data.settings.soundEnabled; $("sparkleEnabled").checked=data.settings.sparkleEnabled;
+  if($("musicFileName")) $("musicFileName").textContent=(data.settings.musicFile || data.settings.musicFileName) ? "Đã chọn file nhạc nền" : "Chưa chọn file nhạc nền";
+  if($("cloudSoundFileName")) $("cloudSoundFileName").textContent=(data.settings.cloudSoundFile || data.settings.cloudSoundFileName) ? "Đã chọn file âm thanh đám mây" : "Chưa chọn file âm thanh đám mây";
+  const list=$("studentList"); list.innerHTML="";
+  if(!data.students.length){list.innerHTML='<p style="margin:0;color:#6b91a3;font-weight:800">Chưa có học sinh nào. Hãy thêm giọt mưa đầu tiên.</p>'; return;}
+  data.students.forEach((s,i)=>{
+    const card=document.createElement("article");
+    card.className="student-card";
+    card.dataset.studentId = s.id;
+    card.innerHTML=`
+      <div class="preview">${s.image?`<img src="${s.image}" alt="">`:"Ảnh"}</div>
+      <div class="fields">
+        <div class="row">
+          <label>Số thứ tự<input class="order" type="number" value="${s.order||i+1}"></label>
+          <label>Tên học sinh<input class="name" value="${escapeAttr(s.name||"")}" placeholder="Ví dụ: Minh Anh"></label>
+        </div>
+        <label>Ảnh học sinh<input class="img" type="file" accept="image/*"></label>
+        <label>Lời nhắn riêng<textarea class="msg" placeholder="Một lời nhắn nhỏ dành cho em...">${escapeHtml(s.message||"")}</textarea></label>
+      </div>
+      <div class="student-actions">
+        <button class="student-save-btn ${s.saved ? "saved" : ""}">${s.saved ? "Đã lưu" : "Lưu"}</button>
+        <button class="up" ${i===0?"disabled":""}>Lên</button>
+        <button class="down" ${i===data.students.length-1?"disabled":""}>Xuống</button>
+        <button class="danger del">Xóa</button>
+      </div>`;
+    const saveStudentBtn = card.querySelector(".student-save-btn");
+    const previewBox = card.querySelector(".preview");
+    const orderInput = card.querySelector(".order");
+    const nameInput = card.querySelector(".name");
+    const msgInput = card.querySelector(".msg");
+    const imgInput = card.querySelector(".img");
+
+    const setSavedState = () => {
+      lastSavedStudentId = s.id;
+      s.saved = true;
+      saveStudentBtn.textContent = "Đã lưu";
+      saveStudentBtn.classList.add("saved");
+    };
+
+    const setUnsavedState = () => {
+      if(lastSavedStudentId === s.id) lastSavedStudentId = "";
+      s.saved = false;
+      saveStudentBtn.textContent = "Lưu";
+      saveStudentBtn.classList.remove("saved");
+      resetGlobalSaveButtonState();
+    };
+
+    orderInput.oninput = setUnsavedState;
+    nameInput.oninput = setUnsavedState;
+    msgInput.oninput = setUnsavedState;
+    imgInput.onchange = () => {
+      setUnsavedState();
+
+      const file = imgInput.files && imgInput.files[0];
+      if(!file) return;
+
+      if(file.size > 2.5 * 1024 * 1024){
+        alert("Ảnh hơi lớn. Nên nén ảnh để web chạy mượt hơn.");
+      }
+
+      compressImageFile(file).then(dataUrl => {
+        // Chỉ preview ảnh ngay trong khung ảnh, chưa thay đổi luồng lưu dữ liệu.
+        // Đồng thời lưu tạm vào dataset để nút "Lưu dữ liệu" có thể lưu toàn bộ ảnh.
+        card.dataset.pendingImage = dataUrl;
+        previewBox.innerHTML = `<img src="${dataUrl}" alt="">`;
+      }).catch(() => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          card.dataset.pendingImage = reader.result;
+          previewBox.innerHTML = `<img src="${reader.result}" alt="">`;
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    saveStudentBtn.onclick = () => {
+      s.order = Number(orderInput.value) || i + 1;
+      s.name = nameInput.value.trim();
+      s.message = msgInput.value.trim();
+
+      const finishSave = () => {
+        setSavedState();
+        save();
+
+        // Cập nhật lại bộ đếm và giữ nguyên card hiện tại để nút hiển thị "Đã lưu" ngay.
+        $("countText").textContent = `${data.students.length} / 60 học sinh`;
+      };
+
+      const file = imgInput.files && imgInput.files[0];
+
+      if(card.dataset.pendingImage){
+        s.image = card.dataset.pendingImage;
+        previewBox.innerHTML = `<img src="${s.image}" alt="">`;
+        delete card.dataset.pendingImage;
+        if(imgInput) imgInput.value = "";
+        finishSave();
+      }else if(file){
+        if(file.size > 2.5 * 1024 * 1024){
+          alert("Ảnh hơi lớn. Nên nén ảnh để web chạy mượt hơn.");
+        }
+
+        compressImageFile(file).then(dataUrl => {
+          s.image = dataUrl;
+
+          // Hiện ảnh upload vào khung preview ngay khi bấm Lưu.
+          previewBox.innerHTML = `<img src="${dataUrl}" alt="">`;
+          if(imgInput) imgInput.value = "";
+
+          finishSave();
+        }).catch(() => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            s.image = reader.result;
+            previewBox.innerHTML = `<img src="${reader.result}" alt="">`;
+            if(imgInput) imgInput.value = "";
+            finishSave();
+          };
+          reader.readAsDataURL(file);
+        });
+      }else{
+        // Không có ảnh mới thì vẫn lưu tên, số thứ tự và lời nhắn riêng.
+        finishSave();
+      }
+    };
+    card.querySelector(".del").onclick=()=>{
+      if(confirm("Xóa học sinh này?")){
+        const studentId = card.dataset.studentId || s.id;
+
+        // Xóa sạch học sinh đó khỏi data, bao gồm ảnh base64 đang lưu.
+        data.students = data.students
+          .filter(x => x.id !== studentId)
+          .map((x,idx)=>({...x,order:idx+1}));
+
+        // Xóa cả hạt mưa đang hiện nếu có.
+        visibleIds = visibleIds.filter(id => id !== studentId);
+
+        save();
+        resetGlobalSaveButtonState();
+
+        // Xóa ngay card khỏi giao diện rồi render lại để tránh còn khung cũ.
+        card.remove();
+        renderTeacher();
+
+        if($("dropsLayer")) $("dropsLayer").innerHTML = "";
+      }
+    };
+    card.querySelector(".up").onclick=()=>moveStudent(i,-1);
+    card.querySelector(".down").onclick=()=>moveStudent(i,1);
+    list.appendChild(card);
+  });
+}
+function readImage(e,s){
+  const file=e.target.files[0]; if(!file)return;
+  if(file.size>2.5*1024*1024) alert("Ảnh hơi lớn. Nên nén ảnh để web chạy mượt hơn.");
+  const reader=new FileReader();
+  reader.onload=()=>{s.image=reader.result; save(); renderTeacher();};
+  reader.readAsDataURL(file);
+}
+function moveStudent(i,d){
+  const j=i+d; if(j<0||j>=data.students.length)return;
+  [data.students[i],data.students[j]]=[data.students[j],data.students[i]];
+  data.students=data.students.map((s,idx)=>({...s,order:idx+1}));
+  save(); renderTeacher();
+}
+function syncStudentCardsBeforeRender(){
+  const cards = Array.from(document.querySelectorAll(".student-card"));
+  cards.forEach(card => {
+    const studentId = card.dataset.studentId;
+    const student = data.students.find(item => item.id === studentId);
+    if(!student) return;
+
+    const orderInput = card.querySelector(".order");
+    const nameInput = card.querySelector(".name");
+    const msgInput = card.querySelector(".msg");
+
+    student.order = Number(orderInput?.value) || student.order || 1;
+    student.name = (nameInput?.value || "").trim();
+    student.message = (msgInput?.value || "").trim();
+
+    if(card.dataset.pendingImage){
+      student.image = card.dataset.pendingImage;
+    }
+  });
+}
+
+function addStudent(){
+  syncStudentCardsBeforeRender();
+  data.students.push({id:uid(),order:data.students.length+1,name:"",image:"",message:"",saved:false});
+  resetGlobalSaveButtonState();
+  save(); renderTeacher();
+}
+function escapeHtml(str){return String(str).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function escapeAttr(str){return escapeHtml(str).replace(/"/g,"&quot;");}
+
+function initSky(){
+  visibleIds=[];
+  $("dropsLayer").innerHTML="";
+  $("completeMsg").classList.add("hidden");
+  $("waitingMsg").classList.toggle("hidden",data.students.length>0);
+  $("backTeacherBtn").classList.toggle("hidden",!previewFromTeacher);
+  if ($("autoRotate360")) $("autoRotate360").checked = autoRotate360;
+  if ($("rotateSpeed360")) $("rotateSpeed360").value = rotateSpeed360;
+  if ($("pageZoomRange")) $("pageZoomRange").value = pageZoomPercent;
+  if ($("pageZoomValue")) $("pageZoomValue").textContent = pageZoomPercent + "%";
+  applyPageZoom();
+  musicOn=Boolean(data.settings.musicEnabled);
+  updateMusic();
+  updateBasics();
+  applyRainbowArcState();
+  bindSkyMotion();
+}
+function sortedStudents(){return [...data.students].sort((a,b)=>(a.order||0)-(b.order||0));}
+function revealNext(){
+  const students=sortedStudents();
+
+  // Hiệu ứng phải luôn xuất hiện mỗi lần click, kể cả khi đã hiện hết hạt mưa.
+  pulseCloud();
+  if(data.settings.sparkleEnabled) sparkleBurst();
+  if(data.settings.soundEnabled) ping();
+
+  if(!students.length){
+    $("waitingMsg").classList.remove("hidden");
+    return;
+  }
+
+  $("waitingMsg").classList.add("hidden");
+  const hidden=students.filter(s=>!visibleIds.includes(s.id));
+
+  if(!hidden.length){
+    shakeDrops();
+    autoShowRainbowIfAllDropsShown();
+    return;
+  }
+
+  const count=Math.max(1,Number(data.settings.dropsPerClick||4));
+  hidden.slice(0,count).forEach(s=>{
+    visibleIds.push(s.id);
+    createDrop(s,visibleIds.length-1,students.length);
+  });
+
+  autoShowRainbowIfAllDropsShown();
+}
+function createDrop(student,index,total){
+  const layer=$("dropsLayer");
+  const drop=document.createElement("div");
+  drop.className="drop billboard-3d"+(student.image?"":" placeholder");
+
+  const isMobile = window.innerWidth <= 820;
+  const dropW = isMobile ? 76 : 96;
+  const dropH = isMobile ? 102 : 128;
+
+  // Các điểm neo phủ rộng nhưng tránh sát mép trên/dưới.
+  // Hạt mưa được chia đều 3 tầng: trên, giữa, dưới của khung web.
+  const anchors = [
+    {x:0.03,y:0.24},{x:0.14,y:0.20},{x:0.27,y:0.27},{x:0.40,y:0.22},{x:0.52,y:0.25},{x:0.64,y:0.21},{x:0.78,y:0.28},{x:0.91,y:0.20},{x:0.98,y:0.25},
+    {x:0.04,y:0.45},{x:0.16,y:0.40},{x:0.30,y:0.52},{x:0.44,y:0.46},{x:0.58,y:0.52},{x:0.72,y:0.46},{x:0.86,y:0.40},{x:0.96,y:0.45},
+    {x:0.06,y:0.70},{x:0.18,y:0.78},{x:0.32,y:0.70},{x:0.46,y:0.77},{x:0.60,y:0.70},{x:0.74,y:0.78},{x:0.88,y:0.70},{x:0.96,y:0.76}
+  ];
+  const anchor = anchors[index % anchors.length];
+
+  const jitterX = (Math.random() - 0.5) * (isMobile ? 34 : 70);
+  const jitterY = (Math.random() - 0.5) * (isMobile ? 28 : 54);
+
+  let targetX = anchor.x * window.innerWidth - dropW / 2 + jitterX;
+  let targetY = anchor.y * window.innerHeight - dropH / 2 + jitterY;
+
+  // Giới hạn nhẹ theo chiều ngang, nhưng chừa khoảng an toàn trên/dưới để hạt mưa không sát rìa.
+  targetX = Math.max(-dropW * 0.28, Math.min(targetX, window.innerWidth - dropW * 0.72));
+  const safeTop = Math.max(78, window.innerHeight * 0.11);
+  const safeBottom = Math.max(110, window.innerHeight * 0.14);
+  targetY = Math.max(safeTop, Math.min(targetY, window.innerHeight - dropH - safeBottom));
+
+  const depthLayers = [
+    {z:-620, scale:0.68, opacity:0.40},
+    {z:-260, scale:0.84, opacity:0.60},
+    {z:80, scale:0.98, opacity:0.82},
+    {z:320, scale:1.12, opacity:0.98}
+  ];
+  const depth = depthLayers[index % depthLayers.length];
+  const depthZ = depth.z + Math.sin(index * 1.19) * 86;
+  const rot = Math.random() * 18 - 9;
+  const floatX = Math.random() * 92 - 46;
+  const floatY = Math.random() * 84 - 20;
+
+  const baseTransform = `translate3d(${floatX}px, ${floatY}px, ${depthZ}px) scale(${depth.scale}) rotateY(var(--counter-ry,0deg)) rotateZ(${rot}deg)`;
+  drop.dataset.baseTransform = baseTransform;
+  drop.style.left = targetX + "px";
+  drop.style.top = targetY + "px";
+  drop.style.opacity = "0";
+  drop.style.zIndex = String(8 + (index % depthLayers.length));
+
+  const rect = $("mainCloud").getBoundingClientRect();
+  const cloudX = rect.left + rect.width / 2 - dropW / 2;
+  const cloudY = rect.top + rect.height * 0.58 - dropH / 2;
+  const startOffsetX = cloudX - targetX;
+  const startOffsetY = cloudY - targetY;
+
+  // Giọt vẫn sinh ra từ đám mây chính rồi bay xa ra các lớp gần / xa khác nhau.
+  drop.style.transform = `translate3d(${startOffsetX}px, ${startOffsetY}px, ${depthZ}px) scale(${(depth.scale * 0.18).toFixed(2)}) rotateY(var(--counter-ry,0deg)) rotateZ(${rot}deg)`;
+  drop.style.setProperty("--dur",(5.6 + Math.random() * 6.2) + "s");
+
+  drop.innerHTML=`<div class="drop-inner"><div class="drop-body"></div>${student.image?`<img class="drop-photo" src="${student.image}" alt="">`:""}${data.settings.showStudentNames?`<div class="drop-name">${escapeHtml(student.name||"Học sinh")}</div>`:""}</div>`;
+  drop.onclick=(e)=>{
+    e.stopPropagation();
+    if(data.settings.sparkleEnabled) sparkleBurst(e.clientX, e.clientY);
+    if(data.settings.soundEnabled) ping();
+    openModal(student);
+  };
+  layer.appendChild(drop);
+
+  requestAnimationFrame(()=>{
+    drop.style.transition="transform 1.7s cubic-bezier(.14,1.18,.24,1), opacity 1.0s ease";
+    drop.style.opacity=String(depth.opacity);
+    drop.style.transform=baseTransform;
+  });
+
+  setTimeout(()=>{
+    drop.style.transition="filter .22s";
+  },1700);
+}
+
+function shakeDrops(){
+  document.querySelectorAll(".drop").forEach((d,i)=>{
+    const base=d.dataset.baseTransform || d.style.transform;
+    d.animate([{filter:"drop-shadow(0 0 0 white)",transform:base},{filter:"drop-shadow(0 0 22px white)",transform:base+" scale(1.08)"},{filter:"drop-shadow(0 0 0 white)",transform:base}],{duration:520,delay:i*12});
+  });
+}
+function pulseCloud(){
+  const c=$("mainCloud"); c.classList.remove("pulse"); void c.offsetWidth; c.classList.add("pulse");
+}
+function sparkleBurst(sourceX, sourceY){
+  const rect=$("mainCloud").getBoundingClientRect();
+  const cx=(typeof sourceX==="number" ? sourceX : rect.left+rect.width/2);
+  const cy=(typeof sourceY==="number" ? sourceY : rect.top+rect.height/2);
+  const host=$("skyScreen");
+  const vw=window.innerWidth;
+  const vh=window.innerHeight;
+
+  // Core fairy-dust bloom from the main cloud
+  for(let i=0;i<80;i++){
+    const d=document.createElement("div");
+    d.className="stardust";
+    const angle=Math.random()*Math.PI*2;
+    const ring=60 + Math.random()*Math.min(vw*.18, 180);
+    const driftX=Math.cos(angle) * (160 + Math.random()*Math.min(vw*.42, 420));
+    const driftY=Math.sin(angle) * (90 + Math.random()*Math.min(vh*.28, 240)) - Math.random()*110;
+    d.style.left=(cx + Math.cos(angle)*ring + Math.random()*90 - 45)+"px";
+    d.style.top=(cy + Math.sin(angle)*ring*.6 + Math.random()*70 - 35)+"px";
+    d.style.setProperty("--dust-x", driftX.toFixed(1)+"px");
+    d.style.setProperty("--dust-y", driftY.toFixed(1)+"px");
+    d.style.setProperty("--dust-size", (7 + Math.random()*13).toFixed(1)+"px");
+    d.style.setProperty("--dust-life", (2.8 + Math.random()*2.0).toFixed(2)+"s");
+    host.appendChild(d);
+    setTimeout(()=>d.remove(), 5600);
+  }
+
+  // Full-page ambient field: particles travel across almost the entire viewport
+  for(let i=0;i<90;i++){
+    const d=document.createElement("div");
+    d.className="stardust";
+    const side=Math.floor(Math.random()*4);
+    let startX, startY;
+
+    if(side===0){ startX = Math.random()*vw; startY = -40; }             // top
+    else if(side===1){ startX = vw + 40; startY = Math.random()*vh; }     // right
+    else if(side===2){ startX = Math.random()*vw; startY = vh + 40; }     // bottom
+    else { startX = -40; startY = Math.random()*vh; }                     // left
+
+    const driftX=(Math.random()*vw*1.3) - vw*0.65;
+    const driftY=(Math.random()*vh*1.1) - vh*0.55;
+
+    d.style.left=startX+"px";
+    d.style.top=startY+"px";
+    d.style.setProperty("--dust-x", driftX.toFixed(1)+"px");
+    d.style.setProperty("--dust-y", driftY.toFixed(1)+"px");
+    d.style.setProperty("--dust-size", (6 + Math.random()*12).toFixed(1)+"px");
+    d.style.setProperty("--dust-life", (3.6 + Math.random()*2.4).toFixed(2)+"s");
+    host.appendChild(d);
+    setTimeout(()=>d.remove(), 6800);
+  }
+
+  // Whole-screen shimmer layer: fine particles spread everywhere with no width limit
+  for(let i=0;i<150;i++){
+    const s=document.createElement("div");
+    s.className="sparkle";
+    const startX = Math.random()*vw;
+    const startY = Math.random()*vh;
+    const driftX = (Math.random()*vw*1.1) - vw*0.55;
+    const driftY = (Math.random()*vh*0.9) - vh*0.45;
+
+    s.style.left=startX+"px";
+    s.style.top=startY+"px";
+    s.style.setProperty("--x",driftX.toFixed(1)+"px");
+    s.style.setProperty("--y",driftY.toFixed(1)+"px");
+    s.style.setProperty("--size",(3 + Math.random()*7).toFixed(1)+"px");
+    s.style.setProperty("--life",(1.8 + Math.random()*1.8).toFixed(2)+"s");
+    host.appendChild(s);
+    setTimeout(()=>s.remove(),4200);
+  }
+
+  // Extra cloud-centered burst so the effect still feels like it starts from the cloud
+  for(let i=0;i<70;i++){
+    const s=document.createElement("div");
+    s.className="sparkle";
+    const angle=Math.random()*Math.PI*2;
+    const distance=120+Math.random()*Math.min(vw*.36, 360);
+    const driftX=Math.cos(angle)*distance + (Math.random()*110-55);
+    const driftY=Math.sin(angle)*(distance*.7) - Math.random()*160;
+    const startSpreadX=(Math.random()*240-120);
+    const startSpreadY=(Math.random()*150-75);
+
+    s.style.left=(cx+startSpreadX)+"px";
+    s.style.top=(cy+startSpreadY)+"px";
+    s.style.setProperty("--x",driftX.toFixed(1)+"px");
+    s.style.setProperty("--y",driftY.toFixed(1)+"px");
+    s.style.setProperty("--size",(4+Math.random()*8.5).toFixed(1)+"px");
+    s.style.setProperty("--life",(1.5+Math.random()*1.8).toFixed(2)+"s");
+    host.appendChild(s);
+    setTimeout(()=>s.remove(),3800);
+  }
+}
+function ping(){
+  if(playUploadedCloudSound()) return;
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    const notes = [659.25, 783.99, 987.77]; // E5, G5, B5
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = i === 0 ? "sine" : "triangle";
+      osc.frequency.setValueAtTime(freq, now + i * 0.06);
+      gain.gain.setValueAtTime(0.0001, now + i * 0.06);
+      gain.gain.linearRampToValueAtTime(0.028 - i * 0.006, now + i * 0.06 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.06 + 0.65);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + i * 0.06);
+      osc.stop(now + i * 0.06 + 0.72);
+    });
+
+    const shimmer = ctx.createOscillator();
+    const shimmerGain = ctx.createGain();
+    shimmer.type = "sine";
+    shimmer.frequency.setValueAtTime(1320, now + 0.1);
+    shimmerGain.gain.setValueAtTime(0.0001, now + 0.1);
+    shimmerGain.gain.linearRampToValueAtTime(0.012, now + 0.16);
+    shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+    shimmer.connect(shimmerGain);
+    shimmerGain.connect(ctx.destination);
+    shimmer.start(now + 0.1);
+    shimmer.stop(now + 0.9);
+  }catch(e){}
+}
+function openModal(student){
+  const list = sortedStudents();
+  const currentIndex = Math.max(0, list.findIndex(item => item.id === student.id));
+  const hasMany = list.length > 1;
+  const prevStudent = hasMany ? list[(currentIndex - 1 + list.length) % list.length] : null;
+  const nextStudent = hasMany ? list[(currentIndex + 1) % list.length] : null;
+
+  $("modalRoot").innerHTML=`
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal">
+        <button class="close" id="closeModal">×</button>
+        ${hasMany ? `
+          <button class="modal-nav prev" id="modalPrev" aria-label="Học sinh trước" title="Học sinh trước">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19"></path></svg>
+          </button>
+          <button class="modal-nav next" id="modalNext" aria-label="Học sinh tiếp theo" title="Học sinh tiếp theo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19"></path></svg>
+          </button>
+        ` : ``}
+        <div class="modal-img">${student.image?`<img src="${student.image}" alt="">`:`<div style="font-weight:900;color:#7aa4b8">Kỉ niệm</div>`}</div>
+        <div class="modal-content">
+          <p class="tiny">Giọt mưa yêu thương ${list.length ? `${currentIndex + 1}/${list.length}` : ``}</p>
+          <h2>${escapeHtml(student.name||"Một học sinh thân yêu")}</h2>
+          <p class="msg">${escapeHtml(student.message||data.generalMessage)}</p>
+          <p class="line">${escapeHtml(data.className)} · Năm học ${escapeHtml(data.schoolYear)}</p>
+          <p class="line">${escapeHtml(data.teacherName)}</p>
+        </div>
+      </div>
+    </div>`;
+  $("closeModal").onclick=closeModal;
+  $("modalBackdrop").onclick=e=>{if(e.target.id==="modalBackdrop")closeModal();};
+
+  if(hasMany){
+    $("modalPrev").onclick=e=>{
+      e.stopPropagation();
+      if(data.settings.sparkleEnabled) sparkleBurst(window.innerWidth * .24, window.innerHeight * .5);
+      if(data.settings.soundEnabled) ping();
+      openModal(prevStudent);
+    };
+    $("modalNext").onclick=e=>{
+      e.stopPropagation();
+      if(data.settings.sparkleEnabled) sparkleBurst(window.innerWidth * .76, window.innerHeight * .5);
+      if(data.settings.soundEnabled) ping();
+      openModal(nextStudent);
+    };
+  }
+}
+function closeModal(){$("modalRoot").innerHTML="";}
+function revealAll(){
+  const students=sortedStudents();
+  if(!students.length)return;
+  students.filter(s=>!visibleIds.includes(s.id)).forEach(s=>{visibleIds.push(s.id);createDrop(s,visibleIds.length-1,students.length);});
+  $("waitingMsg").classList.add("hidden");
+  $("completeMsg").classList.add("hidden");
+  autoShowRainbowIfAllDropsShown();
+}
+function refreshSky(){visibleIds=[];$("dropsLayer").innerHTML="";$("completeMsg").classList.add("hidden");$("waitingMsg").classList.toggle("hidden",data.students.length>0);rainbowArcOn=false;applyRainbowArcState();}
+function readAudioFileForSetting(event, fileKey, nameKey, labelId){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+
+  if(file.size > 5 * 1024 * 1024){
+    alert("File âm thanh hơi lớn. Nên dùng file dưới 5MB để web chạy mượt và lưu được trong trình duyệt.");
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    data.settings[fileKey] = reader.result;
+    data.settings[nameKey] = file.name;
+    save();
+    if($(labelId)){
+      $(labelId).textContent = labelId === "musicFileName" ? "Đã chọn file nhạc nền" : "Đã chọn file âm thanh đám mây";
+    }
+    if(fileKey === "musicFile") updateMusic();
+    alert("Đã thêm file âm thanh: " + file.name);
+  };
+  reader.readAsDataURL(file);
+  event.target.value = "";
+}
+
+function updateAudioLabelAfterUpload(labelId){
+  const label = $(labelId);
+  if(!label) return;
+  label.textContent = labelId === "musicFileName" ? "Đã chọn file nhạc nền" : "Đã chọn file âm thanh đám mây";
+}
+
+function playUploadedCloudSound(){
+  const src = data.settings.cloudSoundFile;
+  if(!src) return false;
+  try{
+    const audio = new Audio(src);
+    audio.volume = 0.72;
+    audio.currentTime = 0;
+    audio.play().catch(()=>{});
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+function musicIconSvg(){
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <defs>
+      <linearGradient id="gradMusicSkyIcon" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e9fbff"/>
+        <stop offset="48%" stop-color="#b8efff"/>
+        <stop offset="100%" stop-color="#72c8ff"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#gradMusicSkyIcon)" d="M9 18.2A3.2 3.2 0 1 1 6.4 15V6.5c0-.7.5-1.3 1.1-1.4l8.7-2.1c.8-.2 1.5.4 1.5 1.2v10.1a3.2 3.2 0 1 1-2.2-3V6.6L8.7 8.3v9.9H9Z"></path>
+  </svg>`;
+}
+
+function rainbowIconSvg(){
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <defs>
+      <linearGradient id="gradRainbowSkyIcon" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e9fbff"/>
+        <stop offset="48%" stop-color="#b8efff"/>
+        <stop offset="100%" stop-color="#72c8ff"/>
+      </linearGradient>
+    </defs>
+    <path fill="none" stroke="url(#gradRainbowSkyIcon)" stroke-width="2.4" stroke-linecap="round" d="M4 16a8 8 0 0 1 16 0"></path>
+    <path fill="none" stroke="url(#gradRainbowSkyIcon)" stroke-width="2.4" stroke-linecap="round" opacity=".78" d="M7 16a5 5 0 0 1 10 0"></path>
+    <path fill="none" stroke="url(#gradRainbowSkyIcon)" stroke-width="2.4" stroke-linecap="round" opacity=".58" d="M10 16a2 2 0 0 1 4 0"></path>
+  </svg>`;
+}
+
+function updateMusic(){
+  const audio=$("bgMusic");
+  const musicButton = $("musicBtn");
+  if(musicButton){
+    musicButton.innerHTML = musicIconSvg();
+    musicButton.title = musicOn ? "Tắt nhạc" : "Bật nhạc";
+    musicButton.setAttribute("aria-label", musicOn ? "Tắt nhạc" : "Bật nhạc");
+  }
+  if(data.settings.musicFile && audio.src !== data.settings.musicFile){
+    audio.src = data.settings.musicFile;
+  }
+  if(musicOn && data.settings.musicFile){
+    audio.volume = 0.55;
+    audio.play().catch(()=>{});
+  }else{
+    audio.pause();
+  }
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download="dam-may-yeu-thuong-data.json"; a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(reader.result);
+      data={...DEFAULT_DATA,...parsed,settings:{...DEFAULT_DATA.settings,...(parsed.settings||{})},students:Array.isArray(parsed.students)?parsed.students:[]};
+      save(); renderTeacher(); alert("Đã nhập dữ liệu thành công.");
+    }catch(err){alert("File JSON không hợp lệ.");}
+  };
+  reader.readAsText(file); e.target.value="";
+}
+
+
+function bindSkyMotion(){
+  if(skyMotionBound) return;
+  skyMotionBound = true;
+  const sky = $("skyScreen");
+  const world = $("world");
+
+  function setTargetFromPoint(clientX, clientY){
+    const nx = (clientX / window.innerWidth - .5) * 2;
+    const ny = (clientY / window.innerHeight - .5) * 2;
+    skyMotion.targetRy = nx * 8;
+    skyMotion.targetRx = -ny * 5;
+  }
+
+  sky.addEventListener("pointermove", e => {
+    if(screen !== "sky") return;
+    setTargetFromPoint(e.clientX, e.clientY);
+  });
+
+  sky.addEventListener("pointerleave", () => {
+    skyMotion.targetRx = 0;
+    skyMotion.targetRy = 0;
+  });
+
+  sky.addEventListener("touchmove", e => {
+    if(screen !== "sky" || !e.touches[0]) return;
+    setTargetFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive:true});
+
+  function animateSky3D(){
+    skyMotion.rx += (skyMotion.targetRx - skyMotion.rx) * .055;
+    skyMotion.ry += (skyMotion.targetRy - skyMotion.ry) * .055;
+
+    const autoX = Math.sin(Date.now() * 0.00045) * 1.2;
+    const autoY = Math.cos(Date.now() * 0.00038) * 1.8;
+
+    if (autoRotate360) {
+      rotateAngle360 = (rotateAngle360 + rotateSpeed360 * 0.22) % 360;
+    }
+
+    const finalRx = skyMotion.rx + autoX;
+    const finalRy = skyMotion.ry + autoY + rotateAngle360;
+
+    world.style.setProperty("--rx", finalRx.toFixed(3) + "deg");
+    world.style.setProperty("--ry", finalRy.toFixed(3) + "deg");
+    world.style.setProperty("--counter-ry", (-finalRy).toFixed(3) + "deg");
+    world.style.setProperty("--zoom", Math.max(pageZoomPercent / 100, 0.01).toFixed(2));
+    requestAnimationFrame(animateSky3D);
+  }
+  animateSky3D();
+}
+
+
+function applyPageZoom(){
+  const world = $("world");
+  if (!world) return;
+  const zoom = Math.max(pageZoomPercent / 100, 0.01);
+  world.style.setProperty("--zoom", zoom.toFixed(2));
+  if ($("pageZoomValue")) $("pageZoomValue").textContent = pageZoomPercent + "%";
+}
+
+function compressImageFile(file, maxWidth = 900, maxHeight = 900, quality = 0.78){
+  return new Promise((resolve, reject) => {
+    if(!file || !file.type || !file.type.startsWith("image/")){
+      reject(new Error("File không phải ảnh"));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        try{
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        }catch(error){
+          reject(error);
+        }
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveAllStudentCardsData(){
+  const cards = Array.from(document.querySelectorAll(".student-card"));
+
+  for(const card of cards){
+    const studentId = card.dataset.studentId;
+    const student = data.students.find(item => item.id === studentId);
+    if(!student) continue;
+
+    const orderInput = card.querySelector(".order");
+    const nameInput = card.querySelector(".name");
+    const msgInput = card.querySelector(".msg");
+    const imgInput = card.querySelector(".img");
+    const previewBox = card.querySelector(".preview");
+
+    student.order = Number(orderInput?.value) || student.order || 1;
+    student.name = (nameInput?.value || "").trim();
+    student.message = (msgInput?.value || "").trim();
+
+    if(card.dataset.pendingImage){
+      student.image = card.dataset.pendingImage;
+      delete card.dataset.pendingImage;
+      if(imgInput) imgInput.value = "";
+    }else{
+      const file = imgInput?.files && imgInput.files[0];
+      if(file){
+        if(file.size > 2.5 * 1024 * 1024){
+          console.warn("Ảnh lớn, đang tự nén trước khi lưu:", file.name);
+        }
+        try{
+          student.image = await compressImageFile(file);
+        }catch(error){
+          console.warn("Không nén được ảnh, dùng FileReader gốc:", error);
+          student.image = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+        if(imgInput) imgInput.value = "";
+      }
+    }
+
+    if(student.image && previewBox){
+      previewBox.innerHTML = `<img src="${student.image}" alt="">`;
+    }
+
+    student.saved = true;
+  }
+
+  data.students = data.students
+    .filter(student => student && student.id)
+    .sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0))
+    .map((student, index) => ({
+      ...student,
+      order: Number(student.order) || index + 1,
+      saved: true
+    }));
+
+  const savedOk = save();
+  if(savedOk){
+    setAllStudentSaveButtonsSaved();
+    $("countText").textContent = `${data.students.length} / 60 học sinh`;
+  }
+  return savedOk;
+}
+
+function setAllStudentSaveButtonsSaved(){
+  data.students = data.students.map(student => ({...student, saved:true}));
+  document.querySelectorAll(".student-save-btn").forEach(btn => {
+    btn.textContent = "Đã lưu";
+    btn.classList.add("saved");
+  });
+  const saveDataBtn = $("saveBtn");
+  if(saveDataBtn){
+    saveDataBtn.textContent = "Đã lưu dữ liệu";
+    saveDataBtn.classList.add("saved");
+  }
+}
+
+function resetGlobalSaveButtonState(){
+  const saveDataBtn = $("saveBtn");
+  if(saveDataBtn){
+    saveDataBtn.textContent = "Lưu dữ liệu";
+    saveDataBtn.classList.remove("saved");
+  }
+}
+
+function applyRainbowArcState(){
+  const layer = $("rainbowArcLayer");
+  const btn = $("rainbowToggleBtn");
+  if(layer) layer.classList.toggle("hidden", !rainbowArcOn);
+  if(btn){
+    btn.classList.toggle("active", rainbowArcOn);
+    btn.innerHTML = rainbowIconSvg();
+    btn.title = rainbowArcOn ? "Tắt cầu vồng" : "Cầu vồng";
+    btn.setAttribute("aria-label", rainbowArcOn ? "Tắt cầu vồng" : "Cầu vồng");
+  }
+}
+
+function autoShowRainbowIfAllDropsShown(){
+  const students = sortedStudents();
+  if(!students.length) return;
+
+  const allShown = students.every(student => visibleIds.includes(student.id));
+  if(allShown && !rainbowArcOn){
+    rainbowArcOn = true;
+    applyRainbowArcState();
+  }
+}
+
+$("teacherBtn").onclick=()=>{const code=prompt("Nhập mã truy cập dành cho giáo viên:"); if(code==="1234"){previewFromTeacher=false;show("teacher")} else if(code!==null) alert("Mã truy cập chưa đúng. Mã mặc định là 1234.");};
+$("studentBtn").onclick=()=>{previewFromTeacher=false;show("sky")};
+$("backStart1").onclick=()=>show("start");
+$("backStart2").onclick=()=>show("start");
+$("backTeacherBtn").onclick=()=>show("teacher");
+$("previewBtn").onclick=()=>{previewFromTeacher=true;show("sky")};
+$("addStudentBtn").onclick=addStudent;
+$("saveBtn").onclick=async ()=>{
+  const saveDataBtn = $("saveBtn");
+  if(saveDataBtn.disabled) return;
+
+  saveDataBtn.disabled = true;
+  const originalText = saveDataBtn.textContent;
+  saveDataBtn.textContent = "Đang lưu...";
+
+  try{
+    const ok = await saveAllStudentCardsData();
+    if(ok){
+      saveDataBtn.textContent = "Đã lưu dữ liệu";
+      saveDataBtn.classList.add("saved");
+      alert("Đã lưu toàn bộ ảnh và dữ liệu trên trình duyệt này.");
+    }else{
+      saveDataBtn.textContent = originalText || "Lưu dữ liệu";
+    }
+  }finally{
+    saveDataBtn.disabled = false;
+  }
+};
+$("exportBtn").onclick=exportData;
+$("importInput").onchange=importData;
+$("clearBtn").onclick=()=>{if(confirm("Bạn có chắc muốn xóa toàn bộ dữ liệu?")){localStorage.removeItem(KEY);data=structuredClone(DEFAULT_DATA);visibleIds=[];if($("dropsLayer")) $("dropsLayer").innerHTML="";renderTeacher();updateBasics();}};
+$("mainCloud").onclick=revealNext;
+$("rainAllBtn").onclick=revealAll;
+$("refreshSkyBtn").onclick=refreshSky;
+$("musicBtn").onclick=()=>{musicOn=!musicOn;updateMusic();};
+$("rainbowToggleBtn").onclick=()=>{rainbowArcOn=!rainbowArcOn;applyRainbowArcState();};
+$("chooseMusicBtn").onclick=()=>$("musicFileInput").click();
+$("musicFileInput").onchange=e=>{readAudioFileForSetting(e,"musicFile","musicFileName","musicFileName"); if(e.target.files && e.target.files[0]) updateAudioLabelAfterUpload("musicFileName");};
+$("chooseCloudSoundBtn").onclick=()=>$("cloudSoundFileInput").click();
+$("cloudSoundFileInput").onchange=e=>{readAudioFileForSetting(e,"cloudSoundFile","cloudSoundFileName","cloudSoundFileName"); if(e.target.files && e.target.files[0]) updateAudioLabelAfterUpload("cloudSoundFileName");};
+$("autoRotate360").onchange=e=>{autoRotate360=e.target.checked;};
+$("rotateSpeed360").oninput=e=>{rotateSpeed360=Number(e.target.value);};
+$("pageZoomRange").oninput=e=>{
+  pageZoomPercent=Number(e.target.value);
+  applyPageZoom();
+};
+
+bindFields();
+updateBasics();
+if($('musicBtn')) $('musicBtn').innerHTML = musicIconSvg();
+if($('rainbowToggleBtn')) $('rainbowToggleBtn').innerHTML = rainbowIconSvg();
+</script>
+</body>
+</html>
